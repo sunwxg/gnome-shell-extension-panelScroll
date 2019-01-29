@@ -12,7 +12,7 @@ make install
 
 restart system
 
-### From gnome extensions website:
+### From gnome extensions website
 
 https://extensions.gnome.org/extension/
 
