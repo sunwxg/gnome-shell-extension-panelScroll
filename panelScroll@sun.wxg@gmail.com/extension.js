@@ -50,11 +50,7 @@ class PanelScroll {
     }
 
     pointerOnLeftPanel() {
-        let display = Gdk.Display.get_default();
-        let deviceManager = display.get_device_manager();
-        let pointer = deviceManager.get_client_pointer();
-
-        let [gdkScreen, x, y] = pointer.get_position();
+	let [x, y, mod] =global.get_pointer();
 
         let currentMonitor;
         if (this.isLess30()) {
