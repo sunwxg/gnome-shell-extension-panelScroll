@@ -50,7 +50,7 @@ class PanelScroll {
     }
 
     pointerOnLeftPanel() {
-	let [x, y, mod] =global.get_pointer();
+        let [x, y, mod] =global.get_pointer();
 
         let currentMonitor;
         if (this.isLess30()) {
