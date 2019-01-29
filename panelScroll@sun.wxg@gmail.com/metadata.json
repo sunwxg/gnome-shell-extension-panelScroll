@@ -1,5 +1,5 @@
 {
-  "description": "Switch windows or workspace by mouse scroll on the panel.\nIf point on left of panel, switch windows.\nIf point on right of panel, switch workspaces.",
+  "description": "Switch windows or workspace by mouse scroll on the panel.\nPointer on left of panel, switch windows.\nPointer on right of panel, switch workspaces.",
   "name": "panel scroll",
   "original-authors": "sun.wxg@gmail.com",
   "shell-version": [
