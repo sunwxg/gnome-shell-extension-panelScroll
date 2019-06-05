@@ -15,6 +15,10 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
+const POSITION = {
+    LEFT: 0,
+    RIGHT: 1
+};
 
 class PanelScroll {
     constructor() {
@@ -41,15 +45,19 @@ class PanelScroll {
             return Clutter.EVENT_STOP;
         }
 
-        if (this.pointerOnLeftPanel())
+        switch (this.pointerOnPanel()) {
+        case POSITION.LEFT:
             this.switchWindows(direction);
-        else
+            break;
+        case POSITION.RIGHT:
             this.switchWorkspace(direction);
+            break;
+        }
 
         return Clutter.EVENT_STOP;
     }
 
-    pointerOnLeftPanel() {
+    pointerOnPanel() {
         let [x, y, mod] =global.get_pointer();
 
         let currentMonitor;
@@ -62,9 +70,14 @@ class PanelScroll {
         }
 
         if (x < (currentMonitor.x + currentMonitor.width / 2))
-            return true;
-        else
-            return false;
+            return POSITION.LEFT;
+
+        let rightBox = Main.panel._rightBox.get_child_at_index(0).width
+        rightBox += Main.panel._rightBox.get_child_at_index(1).width;
+        if (x < (currentMonitor.x + currentMonitor.width - rightBox))
+            return POSITION.RIGHT;
+
+        return null;
     }
 
     switchWindows(direction) {
