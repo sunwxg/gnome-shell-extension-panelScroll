@@ -72,9 +72,8 @@ class PanelScroll {
         if (x < (currentMonitor.x + currentMonitor.width / 2))
             return POSITION.LEFT;
 
-        let rightBox = Main.panel._rightBox.get_child_at_index(0).width
-        rightBox += Main.panel._rightBox.get_child_at_index(1).width;
-        if (x < (currentMonitor.x + currentMonitor.width - rightBox))
+        let aggregateMenu = Main.panel._rightBox.get_last_child().get_first_child();
+        if (x < (currentMonitor.x + currentMonitor.width - aggregateMenu.width))
             return POSITION.RIGHT;
 
         return null;
