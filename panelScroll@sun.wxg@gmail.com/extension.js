@@ -29,7 +29,7 @@ class PanelScroll {
         else
             this.wm = global.workspace_manager;
 
-        this.scrollEventId = Main.panel.actor.connect('scroll-event', this.scrollEvent.bind(this));
+        this.scrollEventId = Main.panel.connect('scroll-event', this.scrollEvent.bind(this));
     }
 
     scrollEvent(actor, event) {
