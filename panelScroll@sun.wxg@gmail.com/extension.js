@@ -173,7 +173,7 @@ class PanelScroll {
 
     destroy() {
         if (this.scrollEventId != null) {
-            Main.panel.actor.disconnect(this.scrollEventId);
+            Main.panel.disconnect(this.scrollEventId);
             this.scrollEventId = null;
         }
     }
