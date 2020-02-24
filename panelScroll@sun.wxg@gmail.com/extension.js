@@ -23,6 +23,7 @@ const POSITION = {
 class PanelScroll {
     constructor() {
         this._allMonitor = false;
+        this._time = 0;
 
         if (this.isLess30())
             this.wm = global.screen;
@@ -44,6 +45,11 @@ class PanelScroll {
         default:
             return Clutter.EVENT_STOP;
         }
+
+        let gap = event.get_time() - this._time;
+        if (gap < 500 && gap >= 0)
+            return Clutter.EVENT_STOP;
+        this._time = event.get_time();
 
         switch (this.pointerOnPanel()) {
         case POSITION.LEFT:
