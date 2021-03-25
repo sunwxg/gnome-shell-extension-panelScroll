@@ -25,10 +25,7 @@ class PanelScroll {
         this._allMonitor = false;
         this._time = 0;
 
-        if (this.isLess30())
-            this.wm = global.screen;
-        else
-            this.wm = global.workspace_manager;
+        this.wm = global.workspace_manager;
 
         this.scrollEventId = Main.panel.connect('scroll-event', this.scrollEvent.bind(this));
     }
@@ -67,13 +64,8 @@ class PanelScroll {
         let [x, y, mod] =global.get_pointer();
 
         let currentMonitor;
-        if (this.isLess30()) {
-            let currentMonitorIndex = global.screen.get_current_monitor();
-            currentMonitor = global.screen.get_monitor_geometry(currentMonitorIndex);
-        } else {
-            let currentMonitorIndex = global.display.get_current_monitor();
-            currentMonitor = global.display.get_monitor_geometry(currentMonitorIndex);
-        }
+        let currentMonitorIndex = global.display.get_current_monitor();
+        currentMonitor = global.display.get_monitor_geometry(currentMonitorIndex);
 
         if (x < (currentMonitor.x + currentMonitor.width / 2))
             return POSITION.LEFT;
@@ -96,7 +88,7 @@ class PanelScroll {
     switchWorkspace(direction) {
         let ws = this.getWorkSpace();
 
-        let activeIndex = this.wm.get_active_workspace().index();
+        let activeIndex = this.wm.get_active_workspace_index();
 
         let newWs;
         if (direction == Meta.MotionDirection.UP) {
@@ -137,12 +129,19 @@ class PanelScroll {
 
         ws[activeIndex] = activeWs;
 
+        const vertical = this.wm.layout_rows === -1;
         for (let i = activeIndex - 1; i >= 0; i--) {
-            ws[i] = ws[i + 1].get_neighbor(Meta.MotionDirection.UP);
+            if (vertical)
+                ws[i] = ws[i + 1].get_neighbor(Meta.MotionDirection.UP);
+            else
+                ws[i] = ws[i + 1].get_neighbor(Meta.MotionDirection.LEFT);
         }
 
         for (let i = activeIndex + 1; i < this.wm.n_workspaces; i++) {
-            ws[i] = ws[i - 1].get_neighbor(Meta.MotionDirection.DOWN);
+            if (vertical)
+                ws[i] = ws[i - 1].get_neighbor(Meta.MotionDirection.DOWN);
+            else
+                ws[i] = ws[i - 1].get_neighbor(Meta.MotionDirection.RIGHT);
         }
 
         return ws;
@@ -167,14 +166,6 @@ class PanelScroll {
         }).filter((w, i, a) => !w.skip_taskbar && a.indexOf(w) == i);
 
         return windows;
-    }
-
-    isLess30() {
-        let version = Conf.PACKAGE_VERSION.split('.');
-        if (version[0] == 3 && version[1] < 30)
-            return true;
-
-        return false;
     }
 
     destroy() {

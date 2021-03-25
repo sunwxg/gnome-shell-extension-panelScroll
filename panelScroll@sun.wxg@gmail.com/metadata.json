@@ -3,9 +3,7 @@
   "name": "panel scroll",
   "original-authors": "sun.wxg@gmail.com",
   "shell-version": [
-    "3.34",
-    "3.36",
-    "3.38"
+      "40"
   ],
   "url": "https://github.com/sunwxg/gnome-shell-extension-panelScroll",
   "uuid": "panelScroll@sun.wxg@gmail.com"
