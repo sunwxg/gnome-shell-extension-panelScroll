@@ -27,6 +27,9 @@ class PanelScroll {
 
         this.wm = global.workspace_manager;
 
+        this.previousDirection = Meta.MotionDirection.UP;
+        this.listPointer = 0;
+
         this.scrollEventId = Main.panel.connect('scroll-event', this.scrollEvent.bind(this));
     }
 
@@ -82,7 +85,15 @@ class PanelScroll {
         if (windows.length <= 1)
             return;
 
-        windows[windows.length - 1].activate(global.get_current_time());
+        if (direction != this.previousDirection) {
+            this.listPointer = 1;
+        } else {
+            this.listPointer += 1;
+            if (this.listPointer > windows.length - 1)
+                this.listPointer = windows.length -1;
+        }
+        this.previousDirection = direction;
+        windows[this.listPointer].activate(global.get_current_time());
     }
 
     switchWorkspace(direction) {
