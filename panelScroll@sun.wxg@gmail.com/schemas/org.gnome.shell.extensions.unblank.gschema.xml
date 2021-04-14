@@ -1,0 +1,17 @@
+<schemalist gettext-domain="gnome-shell-extensions">
+  <schema id="org.gnome.shell.extensions.panelScroll" path="/org/gnome/shell/extensions/panelScroll/">
+    <key name="left" type="s">
+      <default>"window"</default>
+      <summary>left panel action</summary>
+      <description>
+      </description>
+    </key>
+    <key name="right" type="s">
+      <default>"workspace"</default>
+      <summary>right panel action</summary>
+      <description>
+      </description>
+    </key>
+  </schema>
+</schemalist>
+

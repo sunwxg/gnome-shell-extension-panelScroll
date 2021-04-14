@@ -13,7 +13,10 @@ const Conf = imports.misc.config;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const Convenience = Me.imports.convenience;
+
+const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
+const KEY_LEFT = 'left';
+const KEY_RIGHT = 'right';
 
 const POSITION = {
     LEFT: 0,
@@ -24,6 +27,16 @@ class PanelScroll {
     constructor() {
         this._allMonitor = false;
         this._time = 0;
+
+        this.settings = ExtensionUtils.getSettings(SCHEMA_NAME);
+        this.left = this.settings.get_string(KEY_LEFT);
+        this.leftID = this.settings.connect("changed::" + KEY_LEFT, () => {
+            this.left = this.settings.get_string(KEY_LEFT);
+        });
+        this.right = this.settings.get_string(KEY_RIGHT);
+        this.rightID = this.settings.connect("changed::" + KEY_RIGHT, () => {
+            this.right = this.settings.get_string(KEY_RIGHT);
+        });
 
         this.wm = global.workspace_manager;
 
@@ -53,10 +66,16 @@ class PanelScroll {
 
         switch (this.pointerOnPanel()) {
         case POSITION.LEFT:
-            this.switchWindows(direction);
+            if (this.left == 'window')
+                this.switchWindows(direction);
+            else
+                this.switchWorkspace(direction);
             break;
         case POSITION.RIGHT:
-            this.switchWorkspace(direction);
+            if (this.right == 'window')
+                this.switchWindows(direction);
+            else
+                this.switchWorkspace(direction);
             break;
         }
 
@@ -184,6 +203,10 @@ class PanelScroll {
             Main.panel.disconnect(this.scrollEventId);
             this.scrollEventId = null;
         }
+        if (this.leftID)
+            this.settings.disconnect(this.leftID);
+        if (this.rightID)
+            this.settings.disconnect(this.rightID);
     }
 }
 
