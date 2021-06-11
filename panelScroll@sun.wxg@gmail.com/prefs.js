@@ -45,7 +45,7 @@ function addSelection(key, text) {
                              (box) => { gsettings.set_string(key, box.get_active_id()) });
 
     timebox_comboBox.append("window", "Switch windows");
-    timebox_comboBox.append("workspace", "Switch workspacke");
+    timebox_comboBox.append("workspace", "Switch workspace");
     timebox_comboBox.set_active_id(gsettings.get_string(key));
 
     hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 5 });
