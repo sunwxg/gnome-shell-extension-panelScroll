@@ -50,9 +50,11 @@ class PanelScroll {
         let direction;
         switch (event.get_scroll_direction()) {
         case Clutter.ScrollDirection.UP:
+        case Clutter.ScrollDirection.LEFT:
             direction = Meta.MotionDirection.UP;
             break;
         case Clutter.ScrollDirection.DOWN:
+        case Clutter.ScrollDirection.RIGHT:
             direction = Meta.MotionDirection.DOWN;
             break;
         default:
