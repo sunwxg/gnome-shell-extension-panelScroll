@@ -149,7 +149,7 @@ class PanelScroll {
                     this._workspaceSwitcherPopup = null;
                 });
             }
-            this._workspaceSwitcherPopup.display(direction, newWs.index());
+            this._workspaceSwitcherPopup.display(newWs.index());
         }
     }
 
