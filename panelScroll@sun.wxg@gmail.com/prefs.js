@@ -7,6 +7,7 @@ let gsettings;
 const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
 const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
+const KEY_PRIMARY = 'primary';
 
 function init() {
     gsettings = ExtensionUtils.getSettings(SCHEMA_NAME);
@@ -29,6 +30,7 @@ function buildPrefsWidget() {
 
     vbox.append(addSelection(KEY_LEFT, "Panel left side"));
     vbox.append(addSelection(KEY_RIGHT, "Panel right side"));
+    vbox.append(addItemSwitch("Apps on primay monitor", KEY_PRIMARY));
 
     widget.append(vbox);
 
@@ -54,3 +56,15 @@ function addSelection(key, text) {
 
     return hbox;
 }
+
+function addItemSwitch(string, key) {
+        let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 20});
+        let info = new Gtk.Label({xalign: 0, hexpand: true});
+        info.set_markup(string);
+        hbox.append(info);
+
+        let button = new Gtk.Switch({ active: gsettings.get_boolean(key) });
+        button.connect('notify::active', (button) => { gsettings.set_boolean(key, button.active); });
+        hbox.append(button);
+        return hbox;
+    }

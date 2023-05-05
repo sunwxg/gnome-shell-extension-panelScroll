@@ -12,6 +12,12 @@
       <description>
       </description>
     </key>
+    <key name="primary" type="b">
+      <default>false</default>
+      <summary>scroll apps on primary_monitor</summary>
+      <description>
+      </description>
+    </key>
   </schema>
 </schemalist>
 

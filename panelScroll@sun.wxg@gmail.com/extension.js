@@ -17,6 +17,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
 const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
+const KEY_PRIMARY = 'primary';
 
 const POSITION = {
     LEFT: 0,
@@ -36,6 +37,10 @@ class PanelScroll {
         this.right = this.settings.get_string(KEY_RIGHT);
         this.rightID = this.settings.connect("changed::" + KEY_RIGHT, () => {
             this.right = this.settings.get_string(KEY_RIGHT);
+        });
+        this.primary = this.settings.get_boolean(KEY_PRIMARY);
+        this.primaryID = this.settings.connect("changed::" + KEY_PRIMARY, () => {
+            this.primary = this.settings.get_boolean(KEY_PRIMARY);
         });
 
         this.wm = global.workspace_manager;
@@ -197,7 +202,10 @@ class PanelScroll {
             return w.is_attached_dialog() ? w.get_transient_for() : w;
         }).filter((w, i, a) => !w.skip_taskbar && a.indexOf(w) == i);
 
-        return windows;
+        if (this.primary)
+            return windows.filter((w) => w.is_on_primary_monitor() );
+        else
+            return windows;
     }
 
     destroy() {
@@ -209,6 +217,8 @@ class PanelScroll {
             this.settings.disconnect(this.leftID);
         if (this.rightID)
             this.settings.disconnect(this.rightID);
+        if (this.primaryID)
+            this.settings.disconnect(this.primaryID);
     }
 }
 
