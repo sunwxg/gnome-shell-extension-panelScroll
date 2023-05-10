@@ -10,10 +10,11 @@ const KEY_RIGHT = 'right';
 const KEY_PRIMARY = 'primary';
 
 function init() {
-    gsettings = ExtensionUtils.getSettings(SCHEMA_NAME);
 }
 
 function buildPrefsWidget() {
+    gsettings = ExtensionUtils.getSettings(SCHEMA_NAME);
+
     let widget = new Gtk.Box({
         orientation: Gtk.Orientation.VERTICAL,
         margin_top: 10,
