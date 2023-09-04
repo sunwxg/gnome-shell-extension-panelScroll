@@ -1,19 +1,14 @@
-const Gtk = imports.gi.Gtk;
+import Gio from 'gi://Gio';
+import Gtk from 'gi://Gtk';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
 const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
 const KEY_PRIMARY = 'primary';
 
-function init() {
-}
-
-function buildPrefsWidget() {
-    let gsettings = ExtensionUtils.getSettings(SCHEMA_NAME);
-
+function buildPrefsWidget(settings) {
     let widget = new Gtk.Box({
         orientation: Gtk.Orientation.VERTICAL,
         margin_top: 10,
@@ -28,9 +23,9 @@ function buildPrefsWidget() {
     });
     vbox.set_size_request(550, 350);
 
-    vbox.append(addSelection(KEY_LEFT, "Panel left side", gsettings));
-    vbox.append(addSelection(KEY_RIGHT, "Panel right side", gsettings));
-    vbox.append(addItemSwitch("Apps on primay monitor", KEY_PRIMARY, gsettings));
+    vbox.append(addSelection(KEY_LEFT, "Panel left side", settings));
+    vbox.append(addSelection(KEY_RIGHT, "Panel right side", settings));
+    vbox.append(addItemSwitch("Apps on primay monitor", KEY_PRIMARY, settings));
 
     widget.append(vbox);
 
@@ -50,7 +45,7 @@ function addSelection(key, text, gsettings) {
     timebox_comboBox.append("workspace", "Switch workspace");
     timebox_comboBox.set_active_id(gsettings.get_string(key));
 
-    hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 5 });
+    let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 5 });
     hbox.append(label);
     hbox.append(timebox_comboBox);
 
@@ -68,3 +63,9 @@ function addItemSwitch(string, key, gsettings) {
         hbox.append(button);
         return hbox;
     }
+
+export default class PanelScrollPrefs extends ExtensionPreferences {
+    getPreferencesWidget() {
+        return buildPrefsWidget(this.getSettings());
+    }
+}

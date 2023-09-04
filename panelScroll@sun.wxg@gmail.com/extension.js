@@ -1,18 +1,11 @@
 // -*- mode: js2; indent-tabs-mode: nil; js2-basic-offset: 4 -*-
+import Clutter from 'gi://Clutter';
+import Meta from 'gi://Meta';
 
-const Clutter = imports.gi.Clutter;
-const Meta = imports.gi.Meta;
-const Gdk = imports.gi.Gdk;
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-const Gettext = imports.gettext.domain('gnome-shell-extensions');
-const _ = Gettext.gettext;
-
-const Main = imports.ui.main;
-const WorkspaceSwitcherPopup = imports.ui.workspaceSwitcherPopup;
-const Conf = imports.misc.config;
-
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as WorkspaceSwitcherPopup from 'resource:///org/gnome/shell/ui/workspaceSwitcherPopup.js';
 
 const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
 const KEY_LEFT = 'left';
@@ -25,11 +18,11 @@ const POSITION = {
 };
 
 class PanelScroll {
-    constructor() {
+    constructor(settings) {
         this._allMonitor = false;
         this._time = 0;
 
-        this.settings = ExtensionUtils.getSettings(SCHEMA_NAME);
+        this.settings = settings;
         this.left = this.settings.get_string(KEY_LEFT);
         this.leftID = this.settings.connect("changed::" + KEY_LEFT, () => {
             this.left = this.settings.get_string(KEY_LEFT);
@@ -222,16 +215,16 @@ class PanelScroll {
     }
 }
 
-let panelScroll;
+export default class PanelScrollExtension extends Extension {
 
-function init(metadata) {
-}
+    enable() {
+        this._settings = this.getSettings();
+        this.panelScroll = new PanelScroll(this._settings);
+    }
 
-function enable() {
-    panelScroll = new PanelScroll();
-}
-
-function disable() {
-    panelScroll.destroy();
-    panelScroll = null;
+    disable() {
+        this.panelScroll.destroy();
+        this._settings = null;
+        this.panelScroll = null;
+    }
 }

@@ -1,14 +1,13 @@
 {
-  "description": "Switch windows or workspace by mouse scroll on the panel.\nPointer on left of panel, switch windows.\nPointer on right of panel, switch workspaces.",
+  "uuid": "panelScroll@sun.wxg@gmail.com",
+  "extension-id": "panel-scroll",
+  "settings-schema": "org.gnome.shell.extensions.panelScroll",
+  "gettext-domain": "gnome-shell-extensions",
   "name": "panel scroll",
-  "original-authors": "sun.wxg@gmail.com",
+  "description": "Switch windows or workspace by mouse scroll on the panel.\nPointer on left of panel, switch windows.\nPointer on right of panel, switch workspaces.",
   "shell-version": [
-      "40",
-      "41",
-      "42",
-      "43",
-      "44"
+    "45"
   ],
-  "url": "https://github.com/sunwxg/gnome-shell-extension-panelScroll",
-  "uuid": "panelScroll@sun.wxg@gmail.com"
+  "original-authors": "sun.wxg@gmail.com",
+  "url": "https://github.com/sunwxg/gnome-shell-extension-panelScroll"
 }
