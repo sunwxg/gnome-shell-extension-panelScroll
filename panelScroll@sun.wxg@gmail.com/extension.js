@@ -11,6 +11,7 @@ const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
 const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
 const KEY_PRIMARY = 'primary';
+const KEY_WRAP_AROUND = 'wrap';
 
 const POSITION = {
     LEFT: 0,
@@ -34,6 +35,10 @@ class PanelScroll {
         this.primary = this.settings.get_boolean(KEY_PRIMARY);
         this.primaryID = this.settings.connect("changed::" + KEY_PRIMARY, () => {
             this.primary = this.settings.get_boolean(KEY_PRIMARY);
+        });
+        this.wrapAround = this.settings.get_boolean(KEY_WRAP_AROUND);
+        this.wrapAroundID = this.settings.connect("changed::" + KEY_WRAP_AROUND, () => {
+            this.wrapAround = this.settings.get_boolean(KEY_WRAP_AROUND);
         });
 
         this.wm = global.workspace_manager;
@@ -122,14 +127,20 @@ class PanelScroll {
 
         let newWs;
         if (direction == Meta.MotionDirection.UP) {
-            if (activeIndex == 0 )
-                newWs = ws.length - 1;
-            else
+            if (activeIndex == 0 ) {
+                if (this.wrapAround)
+                    newWs = ws.length - 1;
+                else
+                    newWs = activeIndex;
+            } else
                 newWs = activeIndex - 1;
         } else {
-            if (activeIndex == (ws.length - 1) )
-                newWs = 0;
-            else
+            if (activeIndex == (ws.length - 1) ) {
+                if (this.wrapAround)
+                    newWs = 0;
+                else
+                    newWs = activeIndex;
+            } else
                 newWs = activeIndex + 1;
         }
 
@@ -212,6 +223,8 @@ class PanelScroll {
             this.settings.disconnect(this.rightID);
         if (this.primaryID)
             this.settings.disconnect(this.primaryID);
+        if (this.wrapAroundID)
+            this.settings.disconnect(this.wrapAroundID);
     }
 }
 

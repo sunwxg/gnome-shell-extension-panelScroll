@@ -7,6 +7,7 @@ const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
 const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
 const KEY_PRIMARY = 'primary';
+const KEY_WRAP_AROUND = 'wrap';
 
 function buildPrefsWidget(settings) {
     let widget = new Gtk.Box({
@@ -26,6 +27,7 @@ function buildPrefsWidget(settings) {
     vbox.append(addSelection(KEY_LEFT, "Panel left side", settings));
     vbox.append(addSelection(KEY_RIGHT, "Panel right side", settings));
     vbox.append(addItemSwitch("Apps on primay monitor", KEY_PRIMARY, settings));
+    vbox.append(addItemSwitch("Workspace wrap around", KEY_WRAP_AROUND, settings));
 
     widget.append(vbox);
 

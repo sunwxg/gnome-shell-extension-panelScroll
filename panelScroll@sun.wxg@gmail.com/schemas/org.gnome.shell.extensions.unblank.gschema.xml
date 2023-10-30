@@ -18,6 +18,12 @@
       <description>
       </description>
     </key>
+    <key name="wrap" type="b">
+      <default>true</default>
+      <summary>workspace wrap around</summary>
+      <description>
+      </description>
+    </key>
   </schema>
 </schemalist>
 
