@@ -12,6 +12,7 @@ const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
 const KEY_PRIMARY = 'primary';
 const KEY_WRAP_AROUND = 'wrap';
+const KEY_DEBOUNCE = 'debounce';
 
 const POSITION = {
     LEFT: 0,
@@ -40,6 +41,10 @@ class PanelScroll {
         this.wrapAroundID = this.settings.connect("changed::" + KEY_WRAP_AROUND, () => {
             this.wrapAround = this.settings.get_boolean(KEY_WRAP_AROUND);
         });
+		this.debounce = this.settings.get_int(KEY_DEBOUNCE);
+		this.debounceID = this.settings.connect("changed::" + KEY_DEBOUNCE, () => {
+			this.debounce = this.settings.get_int(KEY_DEBOUNCE);
+		})
 
         this.wm = global.workspace_manager;
 
@@ -65,7 +70,7 @@ class PanelScroll {
         }
 
         let gap = event.get_time() - this._time;
-        if (gap < 500 && gap >= 0)
+        if (gap < this.debounce && gap >= 0)
             return Clutter.EVENT_STOP;
         this._time = event.get_time();
 

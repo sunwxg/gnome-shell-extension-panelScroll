@@ -8,6 +8,7 @@ const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
 const KEY_PRIMARY = 'primary';
 const KEY_WRAP_AROUND = 'wrap';
+const KEY_DEBOUNCE = 'debounce';
 
 function buildPrefsWidget(settings) {
     let widget = new Gtk.Box({
@@ -28,6 +29,7 @@ function buildPrefsWidget(settings) {
     vbox.append(addSelection(KEY_RIGHT, "Panel right side", settings));
     vbox.append(addItemSwitch("Apps on primay monitor", KEY_PRIMARY, settings));
     vbox.append(addItemSwitch("Workspace wrap around", KEY_WRAP_AROUND, settings));
+    vbox.append(addSpinButton("Debounce time", KEY_DEBOUNCE, settings));
 
     widget.append(vbox);
 
@@ -62,6 +64,21 @@ function addItemSwitch(string, key, gsettings) {
 
         let button = new Gtk.Switch({ active: gsettings.get_boolean(key) });
         button.connect('notify::active', (button) => { gsettings.set_boolean(key, button.active); });
+        hbox.append(button);
+        return hbox;
+    }
+
+function addSpinButton(string, key, gsettings) {
+        let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 20});
+        let info = new Gtk.Label({xalign: 0, hexpand: true});
+        info.set_markup(string);
+        hbox.append(info);
+
+        let adjustment = new Gtk.Adjustment({ lower: 0, upper: 1000 });
+		// idk why, but I couldn't make it set value in the constructor
+		adjustment.set_value(gsettings.get_int(key));
+        let button = new Gtk.SpinButton({ adjustment: adjustment, digits: 0 });
+        button.connect('value-changed', (button) => { gsettings.set_int(key, button.value) });
         hbox.append(button);
         return hbox;
     }
