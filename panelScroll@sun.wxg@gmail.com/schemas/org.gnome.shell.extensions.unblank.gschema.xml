@@ -24,6 +24,12 @@
       <description>
       </description>
     </key>
+    <key name="debounce" type="i">
+        <default>500</default>
+        <summary></summary>
+        <description>
+        </description>
+	</key>
   </schema>
 </schemalist>
 
