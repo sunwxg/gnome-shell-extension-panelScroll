@@ -7,7 +7,8 @@
   "description": "Switch windows or workspace by mouse scroll on the panel.\nPointer on left of panel, switch windows.\nPointer on right of panel, switch workspaces.",
   "shell-version": [
     "45",
-    "46"
+    "46",
+    "47"
   ],
   "original-authors": "sun.wxg@gmail.com",
   "url": "https://github.com/sunwxg/gnome-shell-extension-panelScroll"
