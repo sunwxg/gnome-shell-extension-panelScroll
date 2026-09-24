@@ -1,90 +1,62 @@
+import Adw from 'gi://Adw';
 import Gio from 'gi://Gio';
 import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-const SCHEMA_NAME = 'org.gnome.shell.extensions.panelScroll';
 const KEY_LEFT = 'left';
 const KEY_RIGHT = 'right';
 const KEY_PRIMARY = 'primary';
 const KEY_WRAP_AROUND = 'wrap';
 const KEY_DEBOUNCE = 'debounce';
 
-function buildPrefsWidget(settings) {
-    let widget = new Gtk.Box({
-        orientation: Gtk.Orientation.VERTICAL,
-        margin_top: 10,
-        margin_bottom: 10,
-        margin_start: 10,
-        margin_end: 10,
+const ACTIONS = ['window', 'workspace'];
+
+function addSelection(group, key, title, settings) {
+    let row = new Adw.ComboRow({
+        title,
+        model: new Gtk.StringList({
+            strings: [_("Switch windows"), _("Switch workspace")],
+        }),
     });
 
-    let vbox = new Gtk.Box({
-        orientation: Gtk.Orientation.VERTICAL,
-        margin_top: 10
+    row.selected = Math.max(0, ACTIONS.indexOf(settings.get_string(key)));
+    row.connect('notify::selected', () => {
+        settings.set_string(key, ACTIONS[row.selected]);
     });
-    vbox.set_size_request(550, 350);
 
-    vbox.append(addSelection(KEY_LEFT, "Panel left side", settings));
-    vbox.append(addSelection(KEY_RIGHT, "Panel right side", settings));
-    vbox.append(addItemSwitch("Apps on primay monitor", KEY_PRIMARY, settings));
-    vbox.append(addItemSwitch("Workspace wrap around", KEY_WRAP_AROUND, settings));
-    vbox.append(addSpinButton("Debounce time", KEY_DEBOUNCE, settings));
-
-    widget.append(vbox);
-
-    return widget;
+    group.add(row);
 }
 
-function addSelection(key, text, gsettings) {
-    let label = new Gtk.Label({ label: text,
-                                hexpand: true,
-                                xalign: 0 });
-
-    let timebox_comboBox= new Gtk.ComboBoxText();
-    timebox_comboBox.connect('changed',
-                             (box) => { gsettings.set_string(key, box.get_active_id()) });
-
-    timebox_comboBox.append("window", "Switch windows");
-    timebox_comboBox.append("workspace", "Switch workspace");
-    timebox_comboBox.set_active_id(gsettings.get_string(key));
-
-    let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 5 });
-    hbox.append(label);
-    hbox.append(timebox_comboBox);
-
-    return hbox;
+function addItemSwitch(group, title, key, settings) {
+    let row = new Adw.SwitchRow({ title });
+    settings.bind(key, row, 'active', Gio.SettingsBindFlags.DEFAULT);
+    group.add(row);
 }
 
-function addItemSwitch(string, key, gsettings) {
-        let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 20});
-        let info = new Gtk.Label({xalign: 0, hexpand: true});
-        info.set_markup(string);
-        hbox.append(info);
-
-        let button = new Gtk.Switch({ active: gsettings.get_boolean(key) });
-        button.connect('notify::active', (button) => { gsettings.set_boolean(key, button.active); });
-        hbox.append(button);
-        return hbox;
-    }
-
-function addSpinButton(string, key, gsettings) {
-        let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 20});
-        let info = new Gtk.Label({xalign: 0, hexpand: true});
-        info.set_markup(string);
-        hbox.append(info);
-
-        let adjustment = new Gtk.Adjustment({ lower: 0, upper: 1000 });
-		// idk why, but I couldn't make it set value in the constructor
-		adjustment.set_value(gsettings.get_int(key));
-        let button = new Gtk.SpinButton({ adjustment: adjustment, digits: 0 });
-        button.connect('value-changed', (button) => { gsettings.set_int(key, button.value) });
-        hbox.append(button);
-        return hbox;
-    }
+function addSpinButton(group, title, key, settings) {
+    let row = new Adw.SpinRow({
+        title,
+        adjustment: new Gtk.Adjustment({ lower: 0, upper: 1000, step_increment: 50 }),
+    });
+    settings.bind(key, row, 'value', Gio.SettingsBindFlags.DEFAULT);
+    group.add(row);
+}
 
 export default class PanelScrollPrefs extends ExtensionPreferences {
-    getPreferencesWidget() {
-        return buildPrefsWidget(this.getSettings());
+    fillPreferencesWindow(window) {
+        let settings = this.getSettings();
+
+        let page = new Adw.PreferencesPage();
+        let group = new Adw.PreferencesGroup();
+
+        addSelection(group, KEY_LEFT, _("Panel left side"), settings);
+        addSelection(group, KEY_RIGHT, _("Panel right side"), settings);
+        addItemSwitch(group, _("Apps on primary monitor"), KEY_PRIMARY, settings);
+        addItemSwitch(group, _("Workspace wrap around"), KEY_WRAP_AROUND, settings);
+        addSpinButton(group, _("Debounce time (ms)"), KEY_DEBOUNCE, settings);
+
+        page.add(group);
+        window.add(page);
     }
 }

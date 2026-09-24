@@ -41,10 +41,10 @@ class PanelScroll {
         this.wrapAroundID = this.settings.connect("changed::" + KEY_WRAP_AROUND, () => {
             this.wrapAround = this.settings.get_boolean(KEY_WRAP_AROUND);
         });
-		this.debounce = this.settings.get_int(KEY_DEBOUNCE);
-		this.debounceID = this.settings.connect("changed::" + KEY_DEBOUNCE, () => {
-			this.debounce = this.settings.get_int(KEY_DEBOUNCE);
-		})
+        this.debounce = this.settings.get_int(KEY_DEBOUNCE);
+        this.debounceID = this.settings.connect("changed::" + KEY_DEBOUNCE, () => {
+            this.debounce = this.settings.get_int(KEY_DEBOUNCE);
+        })
 
         this.wm = global.workspace_manager;
 
@@ -230,6 +230,8 @@ class PanelScroll {
             this.settings.disconnect(this.primaryID);
         if (this.wrapAroundID)
             this.settings.disconnect(this.wrapAroundID);
+        if (this.debounceID)
+            this.settings.disconnect(this.debounceID);
     }
 }
 
